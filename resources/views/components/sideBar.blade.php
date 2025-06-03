@@ -14,9 +14,9 @@
     class="fixed top-0 left-0 h-full w-64 bg-[#A0D468] text-white p-4 transform -translate-x-full transition-all duration-300 ease-in-out z-50 md:static md:translate-x-0 md:block shadow-lg">
     <div class="flex items-center mb-8">
         <img 
-            src="https://storage.googleapis.com/a1aa/image/DIghuSu04qP-elliIsS0Jrs4ZTYTe9D7qQ-sjiN6dtM.jpg" 
+            src="{{ asset('images/logo.jpeg') }}" 
             alt="MetaMeal Logo" 
-            class="w-12 h-12 mr-2 rounded-full shadow"
+            class="w-16 h-16 mr-2 rounded-full shadow"
         />
         <div>
             <h1 class="text-2xl font-bold">MetaMeal</h1>

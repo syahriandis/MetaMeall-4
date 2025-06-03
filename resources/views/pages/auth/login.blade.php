@@ -25,8 +25,31 @@
         <a href="{{ url('daftar') }}" class="text-sm font-medium px-4 pb-2 border-b-2 text-gray-600 hover:text-blue-600 hover:border-blue-600">Registrasi</a>
       </div>
 
+            @if (session('success'))
+          <div class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+              {{ session('success') }}
+          </div>
+      @endif
+
+      @if (session('error'))
+          <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {{ session('error') }}
+          </div>
+      @endif
+
+      @if ($errors->any())
+          <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              <ul class="list-disc pl-5">
+                  @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                  @endforeach
+              </ul>
+          </div>
+      @endif
+
+
       <!-- Login Form -->
-      <form action="{{ route('login') }}" method="POST">
+      <form action="{{ route('login.process') }}" method="POST">
         @csrf
         <div class="mb-4">
           <label class="block text-sm mb-1">Email</label>
@@ -41,6 +64,8 @@
           <a href="#" class="text-sm text-blue-500 hover:underline">Forgot password?</a>
         </div>
         <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Sign In</button>
+        <p class="mt-4 text-sm text-center text-gray-600">
+          Don't have an account? <a href="{{ url('daftar') }}" class="text-blue-600 hover:underline">Sign up</a>
       </form>
     </div>
 

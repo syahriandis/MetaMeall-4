@@ -44,20 +44,30 @@ Route::prefix('/programlatihan')->controller(ProgramLatihanController::class)->g
 
 //RESEP MAKAN
 Route::prefix('/resepmakan')->controller(ResepMakanController::class)->group(function(){
-    Route::get('/', 'resepmakan')->name('resep');
-    Route::get('/trainer', 'resepmakan_trainer')->name('resep-trainer');
+    Route::get('/', 'index')->name('resep');
+
+    Route::get('/trainer', 'indexTrainer')->name('resep-trainer');
+    Route::post('/trainer', 'store')->name('resep-trainer');
+    Route::put('{id}', 'update');
+    Route::delete('/{id}', 'destroy')->name('resep.destroy');
 });
 
 //AUTENTIKASI
 Route::prefix("/")->controller(AuthController::class)->group(function(){
     Route::get('/login', 'login')->name('login');
+    Route::post('/login', 'loginProcess')->name('login.process');
+
     Route::get('/daftar', 'daftar')->name('register');
+    Route::post('/daftar', 'registerProcess')->name('register.process');
+
+    Route::post('/logout', 'logout')->name('logout');
 });
+
 
 //BERANDA  
-Route::prefix('/beranda')->controller(BerandaController::class)->group(function(){
+Route::prefix('/beranda')->middleware('auth')->controller(BerandaController::class)->group(function(){
     Route::get('/', 'beranda')->name('beranda');
+    Route::post('/', 'beranda')->name('beranda');
     Route::get('/trainer', 'beranda_trainer')->name('beranda-trainer');
 });
-
 

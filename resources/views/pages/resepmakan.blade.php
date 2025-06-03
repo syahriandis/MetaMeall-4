@@ -1,89 +1,55 @@
-<x-app title="Resep Makanan">
-  <div class="space-y-4">
-    <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center">
-      <div>
-        <h2 class="text-xl font-bold">Rivaldo</h2>
-        <p class="text-sm font-semibold">Senin, 8 April 2025</p>
-        <p class="text-sm">Resep Ayam</p>
-      </div>
-      <button onclick="showModal('ayam')" class="focus:outline-none">
-        <i class="fas fa-arrow-right text-gray-600"></i>
-      </button>
+<x-app title="Resep Makanan Trainer">
+    <div class="space-y-4">
+        @forelse ($data as $item)
+        <div class="bg-gray-100 p-4 rounded-lg shadow-md flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-bold">{{ $item->nama }}</h2>
+                <p class="text-sm font-semibold">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</p>
+                <p class="text-sm">{{ $item->jenismakanan }}</p>
+                <p class="text-xs text-gray-600">{{ $item->kalori }} Kalori</p>
+            </div>
+            <button onclick="showModal({{ $item->id }})" class="focus:outline-none text-gray-600 hover:text-gray-800">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        @empty
+        <p class="text-center text-gray-500">Belum ada resep dari trainer Anda.</p>
+        @endforelse
     </div>
-    <!-- Add other content cards here... -->
-  </div>
 
-  <div id="resepModal" class="fixed inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative">
-      <button onclick="toggleModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-        <i class="fas fa-times"></i>
-      </button>
-      <div id="modalContent">
-        <!-- Konten resep dimasukkan lewat JS -->
-      </div>
+    <!-- Modal -->
+    <div id="resepModal" class="fixed inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative">
+            <button onclick="toggleModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="modalContent"></div>
+        </div>
     </div>
-  </div>
-  <!-- Script -->
-  <script>
-    function toggleModal() {
-      const modal = document.getElementById("resepModal");
-      modal.classList.toggle("hidden");
-    }
 
-    function showModal(type) {
-      const content = {
-        ayam: `
-          <h3 class="text-2xl font-bold mb-4">🍗 Ayam Goreng Renyah</h3>
-          <p class="font-semibold">Bahan:</p>
-          <ul class="list-disc list-inside mb-4">
-            <li>500 gram ayam</li>
-            <li>3 siung bawang putih</li>
-            <li>1 sdt ketumbar</li>
-            <li>1 sdt garam</li>
-            <li>1 ruas kunyit</li>
-            <li>Minyak goreng secukupnya</li>
-          </ul>
-          <p class="font-semibold">Cara Membuat:</p>
-          <ol class="list-decimal list-inside">
-            <li>Haluskan bumbu, balurkan ke ayam dan diamkan.</li>
-            <li>Rebus ayam sampai air menyusut.</li>
-            <li>Goreng dalam minyak panas hingga kecoklatan.</li>
-          </ol>
-        `
-      };
+    <!-- JS -->
+    <script>
+        const resepData = @json($data);
 
-      document.getElementById("modalContent").innerHTML = content[type];
-      toggleModal();
-    }
+        function toggleModal() {
+            document.getElementById("resepModal").classList.toggle("hidden");
+        }
 
-    function toggleProfile() {
-      const popup = document.getElementById('profilePopup');
-      popup.classList.toggle('hidden');
-    }
+        function showModal(id) {
+            const resep = resepData.find(item => item.id === id);
+            if (!resep) return;
 
-    function openModal() {
-      const modal = document.getElementById('editProfileModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex'); // Supaya modal tampil di tengah
-      document.getElementById('profilePopup').classList.add('hidden'); // Tutup pop-up profile
-    }
+            const content = `
+                <h3 class="text-2xl font-bold mb-2">${resep.nama}</h3>
+                <p class="text-sm text-gray-500 mb-2">${new Date(resep.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p class="font-semibold mb-1">Jenis Makanan: ${resep.jenismakanan}</p>
+                <p class="font-semibold mb-1">Kalori: ${resep.kalori} Kalori</p>
+                <p class="font-semibold mt-4">Detail:</p>
+                <p class="text-sm text-gray-700 whitespace-pre-line">${resep.details}</p>
+            `;
 
-    function closeModal() {
-      const modal = document.getElementById('editProfileModal');
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
-    }
-
-    window.addEventListener('click', function(e) {
-      const popup = document.getElementById('profilePopup');
-      const modal = document.getElementById('editProfileModal');
-      const isInsidePopup = popup.contains(e.target);
-      const isButton = e.target.closest('button');
-      const isInsideModal = modal.contains(e.target);
-
-      if (!isInsidePopup && !isButton && popup && !modal.classList.contains('flex')) {
-        popup.classList.add('hidden');
-      }
-    });
-  </script>
+            document.getElementById("modalContent").innerHTML = content;
+            toggleModal();
+        }
+    </script>
 </x-app>

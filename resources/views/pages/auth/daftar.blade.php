@@ -25,8 +25,31 @@
         <a href="{{ url('daftar') }}" class="text-sm font-medium px-4 pb-2 border-b-2 border-blue-600 text-blue-600">Registrasi</a>
       </div>
 
+      @if (session('success'))
+  <div class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+      {{ session('success') }}
+  </div>
+@endif
+
+@if (session('error'))
+  <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+      {{ session('error') }}
+  </div>
+@endif
+
+@if ($errors->any())
+  <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+      <ul class="list-disc pl-5">
+          @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+          @endforeach
+      </ul>
+  </div>
+@endif
+
+
       <!-- Register Form -->
-      <form action="{{ route('register') }}" method="POST">
+      <form action="{{ route('register.process') }}" method="POST">
         @csrf
         <div class="mb-3">
           <label class="block text-sm mb-1">Email</label>
