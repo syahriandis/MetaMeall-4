@@ -16,10 +16,17 @@ Route::prefix('landing')->controller(LandingpageController::class)->group(functi
     Route::get('/fitur', 'fitur')->name('fitur');
 });
 
-//NOTIFIKASI 
-Route::prefix('/')->controller(NotifikasiController::class)->group(function(){
-    Route::get('/notifikasi', 'notifikasi')->name('notifikasi');
-});
+// NOTIFIKASI UNTUK TRAINEE
+Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
+Route::patch('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
+
+// NOTIFIKASI UNTUK TRAINER (tambah + edit + hapus)
+Route::get('/notifikasi/trainer', [NotifikasiController::class, 'indextrainer'])->name('notifikasi.trainer');
+Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
+Route::put('/notifikasi/{id}', [NotifikasiController::class, 'update'])->name('notifikasi.update');
+Route::delete('/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->name('notifikasi.destroy');
+
+
 
 //PROGRES
 Route::prefix('/progres')->controller(ProgresController::class)->group(function(){
