@@ -6,8 +6,8 @@
     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex items-center space-x-4">
       <div class="w-20 h-20 bg-gray-200 rounded-full"></div>
       <div class="border border-gray-300 rounded-lg px-6 py-2">
-        <h2 class="font-bold text-lg">Rivaldo Franscisco</h2>
-        <p class="text-sm text-gray-500">Pria, 19 Tahun</p>
+        <h2 class="font-bold text-lg">{{ Auth::user()->name }}</h2>
+        <p class="text-sm text-gray-500">{{ Auth::user()->age }} tahun</p>
       </div>
     </div>
 
