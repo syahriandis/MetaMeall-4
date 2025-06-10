@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -29,10 +30,16 @@ class AuthController extends Controller
         'gender' => 'required|string',
         'weight' => 'required|numeric',
         'height' => 'required|numeric',
+        'role' => 'required|in:trainer,trainee'
+
+        
+
     ]);
 
     // Simpan user ke database
+    Log::debug('ROLE YANG DISIMPAN:', ['role' => $request->role]);
     $user = User::create([
+        
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
@@ -42,10 +49,21 @@ class AuthController extends Controller
         'height' => $request->height,
         'email_verified_at' => now(),
         'remember_token' => Str::random(10),
-        'role' => 'trainee',
+        'role' => $request->role,
+        
     ]);
 
-    return redirect()->route('beranda')->with('success', 'Registrasi berhasil!');
+        $user->profile()->create([
+        'nama' => '',
+        'email' => '',
+        'umur' => '',
+        'berat' => '',
+        'tinggi' => '',
+    ]);
+
+    logger('ROLE INPUT:', ['role' => $request->role]);
+    Auth::login($user);
+    return redirect()->route('login')->with('success', 'Registrasi berhasil!');
 }
 
 public function loginProcess(Request $request)
@@ -54,7 +72,14 @@ public function loginProcess(Request $request)
 
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
-        return redirect()->route('beranda')->with('success', 'Login berhasil!');
+
+        $user = Auth::user();
+
+        if ($user->role === 'trainer') {
+            return redirect()->route('beranda-trainer')->with('success', 'Login berhasil sebagai trainer!');
+        }
+
+        return redirect()->route('beranda')->with('success', 'Login berhasil sebagai trainee!');
     }
 
     return back()->withErrors([
@@ -74,3 +99,4 @@ public function logout(Request $request)
     
 }
 }
+

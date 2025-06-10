@@ -22,6 +22,13 @@ class ResepMakanController extends Controller
         return view('pages.trainer.resepmakan', compact('data'));
     }
 
+    // Untuk trainee
+public function indexTrainee()
+{
+    $data = ResepMakan::orderBy('tanggal', 'asc')->get();
+    return view('pages.resepmakan', compact('data'));
+}
+
     public function store(Request $request)
     {
         $validated = $request->validate([

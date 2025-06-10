@@ -28,151 +28,90 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
-      // Data Hari
-      const labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+<script>
+  // Ambil data dari Controller langsung
+  const dataLatihan = @json($latihan);
+  const dataMakan = @json($makan);
 
-      // Kalori Latihan
-      const dataLatihan = {
-        labels: labels,
-        datasets: [{
-          label: 'Kalori Latihan',
-          data: [400, 320, 250, 330, 290, 390],
-          backgroundColor: 'rgba(75, 85, 99, 0.7)',
-          borderRadius: 8,
-          barThickness: 40
-        }]
-      };
+  // Siapkan data chart
+  const tanggalLatihan = dataLatihan.map(item => item.tanggal);
+  const kaloriLatihan = dataLatihan.map(item => item.kalori);
 
-      // Kalori Makan
-      const dataMakan = {
-        labels: labels,
-        datasets: [{
-          label: 'Kalori Makan',
-          data: [500, 450, 400, 470, 430, 480],
-          backgroundColor: 'rgba(160, 212, 104, 0.7)',
-          borderRadius: 8,
-          barThickness: 40
-        }]
-      };
+  const tanggalMakan = dataMakan.map(item => item.tanggal);
+  const kaloriMakan = dataMakan.map(item => item.kalori);
 
-      // Opsi umum chart
-      const options = {
-        responsive: true,
-        animation: {
-          duration: 1500,  // Animasi jalan 1.5 detik
-          easing: 'easeOutBounce' // Efek pantul pas naik
-        },
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { stepSize: 100 },
-            grid: { borderDash: [5, 5] }
-          },
-          x: {
-            grid: { display: false }
-          }
-        }
-      };
-
-      // Render Chart Latihan
-      const latihanCtx = document.getElementById('latihanChart').getContext('2d');
-      new Chart(latihanCtx, {
-        type: 'bar',
-        data: dataLatihan,
-        options: options
-      });
-
-      // Render Chart Makan
-      const makanCtx = document.getElementById('makanChart').getContext('2d');
-      new Chart(makanCtx, {
-        type: 'bar',
-        data: dataMakan,
-        options: options
-      });
-    </script>
-
-    <script>
-      const latihanCtx = document.getElementById('latihanChart').getContext('2d');
-      new Chart(latihanCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-          datasets: [{
-            label: 'Kalori Latihan',
-            data: [400, 320, 250, 330, 290, 390],
-            backgroundColor: 'rgba(75, 85, 99, 0.7)',
-            borderRadius: 6,
-            barThickness: 40
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { stepSize: 100 },
-              grid: { borderDash: [5, 5] }
-            },
-            x: {
-              grid: { display: false }
-            }
-          }
-        }
-      });
-
-      const makanCtx = document.getElementById('makanChart').getContext('2d');
-      new Chart(makanCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-          datasets: [{
-            label: 'Kalori Makan',
-            data: [500, 450, 400, 470, 430, 480], // Data beda dikit contoh
-            backgroundColor: 'rgba(160, 212, 104, 0.7)', // Warna hijau cerah
-            borderRadius: 6,
-            barThickness: 40
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { stepSize: 100 },
-              grid: { borderDash: [5, 5] }
-            },
-            x: {
-              grid: { display: false }
-            }
-          }
-        }
-      });
-
-
-      function toggleProfile() {
-        const popup = document.getElementById('profilePopup');
-        popup.classList.toggle('hidden');
+  // Opsi umum chart
+  const options = {
+    responsive: true,
+    animation: {
+      duration: 1500,
+      easing: 'easeOutBounce'
+    },
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 100 },
+        grid: { borderDash: [5, 5] }
+      },
+      x: {
+        grid: { display: false }
       }
+    }
+  };
 
-      // Klik di luar pop-up untuk menutup
-      window.addEventListener('click', function (e) {
-        const popup = document.getElementById('profilePopup');
-        const button = e.target.closest('button');
-        if (!popup.contains(e.target) && !button) {
-          popup.classList.add('hidden');
-        }
-      });
-    </script>
+  // Render Chart Latihan
+  const latihanCtx = document.getElementById('latihanChart').getContext('2d');
+  new Chart(latihanCtx, {
+    type: 'bar',
+    data: {
+      labels: tanggalLatihan,
+      datasets: [{
+        label: 'Kalori Latihan',
+        data: kaloriLatihan,
+        backgroundColor: 'rgba(75, 85, 99, 0.7)',
+        borderRadius: 8,
+        barThickness: 40
+      }]
+    },
+    options: options
+  });
+
+  // Render Chart Makan
+  const makanCtx = document.getElementById('makanChart').getContext('2d');
+  new Chart(makanCtx, {
+    type: 'bar',
+    data: {
+      labels: tanggalMakan,
+      datasets: [{
+        label: 'Kalori Makan',
+        data: kaloriMakan,
+        backgroundColor: 'rgba(160, 212, 104, 0.7)',
+        borderRadius: 8,
+        barThickness: 40
+      }]
+    },
+    options: options
+  });
+
+  function toggleProfile() {
+    const popup = document.getElementById('profilePopup');
+    popup.classList.toggle('hidden');
+  }
+
+  // Klik di luar pop-up untuk menutup
+  window.addEventListener('click', function (e) {
+    const popup = document.getElementById('profilePopup');
+    const button = e.target.closest('button');
+    if (!popup.contains(e.target) && !button) {
+      popup.classList.add('hidden');
+    }
+  });
+</script>
+
+
 </x-app>

@@ -44,7 +44,7 @@
                 @method('PUT')
                 <input type="hidden" id="modalId" name="id" />
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Nama Resep</label>
+                    <label class="block text-sm font-semibold mb-1">Nama User</label>
                     <input type="text" id="modalNama" name="nama" class="w-full border rounded p-2" required />
                 </div>
                 <div class="mb-4">
@@ -85,7 +85,7 @@
                 @csrf
                 <input type="hidden" name="id" />
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Nama Resep</label>
+                    <label class="block text-sm font-semibold mb-1">Nama User</label>
                     <input type="text" name="nama" class="w-full border rounded p-2" required />
                 </div>
                 <div class="mb-4">

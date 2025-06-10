@@ -69,7 +69,11 @@
         </div>
         <div class="mb-3">
           <label class="block text-sm mb-1">Gender</label>
-          <input type="text" name="gender" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Enter your Gender" required>
+          <select name="gender" class="w-full border border-gray-300 p-2 rounded-md" required>
+          <option value="">Choose Your Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="block text-sm mb-1">Weight</label>
@@ -78,6 +82,14 @@
         <div class="mb-3">
           <label class="block text-sm mb-1">Height</label>
           <input type="number" name="height" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Enter your Height" required>
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm mb-1">Role</label>
+          <select name="role" class="w-full border border-gray-300 p-2 rounded-md" required>
+          <option value="">Choose Your Role</option>
+          <option value="trainee" {{ old('role') == 'trainee' ? 'selected' : '' }}>Trainee</option>
+          <option value="trainer" {{ old('role') == 'trainer' ? 'selected' : '' }}>Trainer</option>
+          </select>
         </div>
         <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Sign up</button>
       </form>

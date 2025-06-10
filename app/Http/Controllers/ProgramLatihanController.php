@@ -22,12 +22,14 @@ class ProgramLatihanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required',
-            'tanggal' => 'required|date',
-            'jenis_latihan' => 'required',
-            'details' => 'required',
-            'status' => 'nullable'
-        ]);
+    'nama' => 'required',
+    'tanggal' => 'required|date',
+    'jenis_latihan' => 'required',
+    'details' => 'required',
+    'status' => 'nullable',
+    'kalori' => 'required|numeric' // Tambahan
+]);
+
 
         $validated['status'] = $validated['status'] ?? 'belum';
 
@@ -41,12 +43,14 @@ class ProgramLatihanController extends Controller
         $program = ProgramLatihan::findOrFail($id);
 
         $validated = $request->validate([
-            'nama' => 'required',
-            'tanggal' => 'required|date',
-            'jenis_latihan' => 'required',
-            'details' => 'required',
-            'status' => 'nullable'
-        ]);
+    'nama' => 'required',
+    'tanggal' => 'required|date',
+    'jenis_latihan' => 'required',
+    'details' => 'required',
+    'status' => 'nullable',
+    'kalori' => 'required|numeric' // Tambahan
+]);
+
 
         $validated['status'] = $validated['status'] ?? 'belum';
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\ResepMakanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Middleware\RoleMiddleware;
 
 //LANDING PAGES
 Route::get('/', [LandingpageController::class, 'home'])->name('landing');
@@ -32,6 +33,9 @@ Route::delete('/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->nam
 Route::prefix('/progres')->controller(ProgresController::class)->group(function(){
     Route::get('/', 'progres')->name('progres');
     Route::get('/trainer', 'progres_trainer')->name('progres-trainer');
+    Route::get('/progres', [ProgresController::class, 'progres']);
+
+
 });
 
 
@@ -42,6 +46,8 @@ Route::prefix('/programlatihan')->controller(ProgramLatihanController::class)->g
 
     // CRUD
     Route::post('/', 'store')->name('program.store');
+
+        // CRUD
     Route::post('/update/{id}', 'update')->name('program.update');
     Route::get('/delete/{id}', 'destroy')->name('program.delete');
 });
@@ -52,12 +58,21 @@ Route::prefix('/programlatihan')->controller(ProgramLatihanController::class)->g
 //RESEP MAKAN
 Route::prefix('/resepmakan')->controller(ResepMakanController::class)->group(function(){
     Route::get('/', 'index')->name('resep');
+    Route::get('/trainee', 'indexTrainee')->name('resep-trainee');
+// Hapus POST trainee karena trainee tidak bisa tambah data
 
+   
+
+    // TRAINER
+    Route::get('/', 'index')->name('resep');
     Route::get('/trainer', 'indexTrainer')->name('resep-trainer');
     Route::post('/trainer', 'store')->name('resep-trainer');
+
+    // CRUD
     Route::put('{id}', 'update');
     Route::delete('/{id}', 'destroy')->name('resep.destroy');
 });
+
 
 //AUTENTIKASI
 Route::prefix("/")->controller(AuthController::class)->group(function(){
@@ -78,3 +93,9 @@ Route::prefix('/beranda')->middleware('auth')->controller(BerandaController::cla
     Route::get('/trainer', 'beranda_trainer')->name('beranda-trainer');
 });
 
+// Middleware untuk role
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return view('pages.beranda');
+    });
+});
