@@ -20,7 +20,7 @@
         />
         <div>
             <h1 class="text-2xl font-bold">MetaMeal</h1>
-            <p class="italic">Selamat Datang</p>
+            
         </div>
     </div>
 
