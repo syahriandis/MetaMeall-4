@@ -20,7 +20,8 @@
                 <h2 class="text-xl font-bold">{{ $item['nama'] ?? '-' }}</h2>
                 <p class="text-sm font-semibold">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
                 <p>{{ $item['jenis_latihan'] ?? '-' }}</p>
-                <p class="text-sm text-gray-700">Kalori: {{ $item['kalori'] ?? 0 }} kcal</p> <!-- TAMBAHAN -->
+                <p class="text-sm text-gray-700">Kalori: {{ $item['kalori'] ?? 0 }} kcal</p>
+                <p class="text-sm text-gray-700">Feedback: {{ $item['feedback'] ?? '-' }}</p>
             </div>
             <div class="space-x-2">
                 <button class="bg-green-500 text-white px-4 py-2 rounded open-modal-btn"
@@ -29,8 +30,8 @@
                     data-tanggal="{{ $item['tanggal'] ?? '' }}"
                     data-latihan="{{ $item['jenis_latihan'] ?? '' }}"
                     data-detail="{{ $item['details'] ?? '' }}"
-                    data-status="{{ $item['status'] ?? 'not yet' }}"
-                    data-kalori="{{ $item['kalori'] ?? 0 }}"> <!-- TAMBAHAN -->
+                    data-feedback="{{ $item['feedback'] ?? '' }}"
+                    data-kalori="{{ $item['kalori'] ?? 0 }}">
                     Ubah
                 </button>
                 <button class="bg-red-500 text-white px-4 py-2 rounded delete-btn"
@@ -78,12 +79,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Status</label>
-                    <select id="edit-status" name="status"
-                        class="w-full border rounded p-2 bg-white text-black" required>
-                        <option value="not yet">Not Yet</option>
-                        <option value="finish">Finish</option>
-                    </select>
+                    <label class="block text-sm font-semibold mb-1">Feedback dari Trainee</label>
+                    <textarea id="edit-feedback" name="feedback" rows="2"
+                        class="w-full border rounded p-2 bg-white text-black resize-none"></textarea>
                 </div>
 
                 <div class="flex justify-end space-x-2">
@@ -107,7 +105,7 @@
         const modalLatihan = document.getElementById("modalLatihan");
         const modalDetails = document.getElementById("details");
         const modalKalori = document.getElementById("modalKalori");
-        const modalStatus = document.getElementById("edit-status");
+        const modalFeedback = document.getElementById("edit-feedback");
 
         document.querySelectorAll(".open-modal-btn").forEach(button => {
             button.addEventListener("click", () => {
@@ -118,8 +116,8 @@
                 modalTanggal.value = button.getAttribute("data-tanggal");
                 modalLatihan.value = button.getAttribute("data-latihan");
                 modalDetails.value = button.getAttribute("data-detail");
-                modalKalori.value = button.getAttribute("data-kalori"); // TAMBAHAN
-                modalStatus.value = button.getAttribute("data-status");
+                modalKalori.value = button.getAttribute("data-kalori");
+                modalFeedback.value = button.getAttribute("data-feedback");
                 modal.classList.remove("hidden");
             });
         });
@@ -132,8 +130,8 @@
             modalTanggal.value = "";
             modalLatihan.value = "";
             modalDetails.value = "";
-            modalKalori.value = ""; // TAMBAHAN
-            modalStatus.value = "not yet";
+            modalKalori.value = "";
+            modalFeedback.value = "";
             modal.classList.remove("hidden");
         });
 
@@ -156,8 +154,8 @@
                 tanggal: modalTanggal.value,
                 jenis_latihan: modalLatihan.value,
                 details: modalDetails.value,
-                kalori: modalKalori.value, // TAMBAHAN
-                status: modalStatus.value,
+                kalori: modalKalori.value,
+                feedback: modalFeedback.value,
                 _token: token
             };
 

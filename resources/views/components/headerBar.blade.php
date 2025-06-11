@@ -14,6 +14,15 @@
         <i class="fas fa-user-circle"></i>
       </button>
 
+      <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="text-white text-xl hover:text-gray-200" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </form>
+
+      
+
       
 
       <!-- Pop-up Profile -->

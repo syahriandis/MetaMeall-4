@@ -10,8 +10,10 @@
             <div class="mt-2">
                 <button 
                     class="bg-blue-500 text-white px-3 py-1 rounded detail-btn"
-                    data-detail="{{ $item['details'] ?? '-' }}"
-                    data-status="{{ $item['status'] ?? '-' }}"
+                     data-detail="{{ $item['details'] ?? '-' }}"
+                    data-status="{{ $item['feedback'] ?? '-' }}"
+                    data-id="{{ $item['id'] }}"
+
                 >
                     Lihat Detail
                 </button>
@@ -26,24 +28,40 @@
         <h2 class="text-lg font-bold mb-2">Detail Program Latihan</h2>
         <p id="modalDetail" class="mb-2 text-gray-700"></p>
         <p id="modalStatus" class="text-sm italic text-gray-500"></p>
+        <form id="feedbackForm" class="mt-4 space-y-2" method="POST">
+    @csrf
+    <input type="hidden" id="feedbackId" name="id">
+    <label for="feedback" class="block text-sm font-medium text-gray-700">Feedback:</label>
+    <textarea id="feedback" name="feedback" rows="3" class="w-full border rounded p-2" placeholder="Tulis feedback Anda..."></textarea>
+    <button type="submit" class="px-4 py-1 bg-blue-600 text-white rounded">Kirim Feedback</button>
+    <div id="feedbackMsg" class="text-green-600 text-sm mt-1 hidden">Feedback terkirim!</div>
+</form>
+
         <div class="mt-4 text-right">
             <button id="closeDetailModal" class="px-4 py-1 bg-gray-500 text-white rounded">Tutup</button>
         </div>
+        <script>
+
+        </script>
     </div>
 </div>
 
 
     <script>
         const modal = document.getElementById('detailModal');
-        const detailText = document.getElementById('modalDetail');
-        const statusText = document.getElementById('modalStatus');
-        const closeBtn = document.getElementById('closeDetailModal');
+    const detailText = document.getElementById('modalDetail');
+    const statusText = document.getElementById('modalStatus');
+    const feedbackIdInput = document.getElementById('feedbackId');
+    const closeBtn = document.getElementById('closeDetailModal');
 
-        document.querySelectorAll('.detail-btn').forEach(btn => {
+            document.querySelectorAll('.detail-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                detailText.textContent = 'Detail: ' + btn.getAttribute('data-detail');
-                statusText.textContent = 'Status: ' + btn.getAttribute('data-status');
-                modal.classList.remove('hidden');
+            detailText.textContent = 'Detail: ' + btn.getAttribute('data-detail');
+            statusText.textContent = 'Feedback Trainee: ' + btn.getAttribute('data-status');
+            feedbackIdInput.value = btn.getAttribute('data-id'); // id dari program_latihan
+            modal.classList.remove('hidden');
+
+            document.getElementById('feedbackForm').action = `/programlatihan/feedback/${btn.getAttribute('data-id')}`;
             });
         });
 

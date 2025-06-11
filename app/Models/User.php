@@ -56,4 +56,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+        public function feedbacksGiven()
+    {
+        return $this->hasMany(Feedback::class, 'trainee_id');
+    }
+
+    // Sebagai Trainer
+    public function feedbacksReceived()
+    {
+        return $this->hasMany(Feedback::class, 'trainer_id');
+    }
 }

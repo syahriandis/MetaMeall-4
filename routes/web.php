@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\FeedbackController;
+
 
 //LANDING PAGES
 Route::get('/', [LandingpageController::class, 'home'])->name('landing');
@@ -98,4 +100,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
         return view('pages.beranda');
     });
+});
+
+
+// FEEDBACK
+Route::middleware(['auth'])->group(function () {
+    Route::post('/programlatihan/feedback/{id}', [ProgramLatihanController::class, 'submitFeedback'])->name('programlatihan.feedback');
+
+    Route::get('/feedback/create', [FeedbackController::class, 'create'])->name('feedback.create');
 });

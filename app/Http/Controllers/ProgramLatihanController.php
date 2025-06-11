@@ -22,16 +22,15 @@ class ProgramLatihanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-    'nama' => 'required',
-    'tanggal' => 'required|date',
-    'jenis_latihan' => 'required',
-    'details' => 'required',
-    'status' => 'nullable',
-    'kalori' => 'required|numeric' // Tambahan
-]);
+            'nama' => 'required',
+            'tanggal' => 'required|date',
+            'jenis_latihan' => 'required',
+            'details' => 'required',
+            'feedback' => 'nullable',
+            'kalori' => 'required|numeric'
+        ]);
 
-
-        $validated['status'] = $validated['status'] ?? 'belum';
+        $validated['feedback'] = $validated['feedback'] ?? 'belum';
 
         ProgramLatihan::create($validated);
 
@@ -43,16 +42,15 @@ class ProgramLatihanController extends Controller
         $program = ProgramLatihan::findOrFail($id);
 
         $validated = $request->validate([
-    'nama' => 'required',
-    'tanggal' => 'required|date',
-    'jenis_latihan' => 'required',
-    'details' => 'required',
-    'status' => 'nullable',
-    'kalori' => 'required|numeric' // Tambahan
-]);
+            'nama' => 'required',
+            'tanggal' => 'required|date',
+            'jenis_latihan' => 'required',
+            'details' => 'required',
+            'feedback' => 'nullable',
+            'kalori' => 'required|numeric'
+        ]);
 
-
-        $validated['status'] = $validated['status'] ?? 'belum';
+        $validated['feedback'] = $validated['feedback'] ?? 'belum';
 
         $program->update($validated);
 
@@ -65,5 +63,21 @@ class ProgramLatihanController extends Controller
         $program->delete();
 
         return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+
+    // ✅ Tambahkan method feedback DI DALAM class
+    public function submitFeedback(Request $request, $id)
+    {
+        $request->validate([
+            'feedback' => 'required|string'
+        ]);
+
+        $program = ProgramLatihan::findOrFail($id);
+        // dd($program);
+        $program->feedback = $request->input('feedback');
+        // $program->status = 'sudah'; // Ubah status menjadi 'sudah' jika feedback sudah diberikan
+        $program->save();
+
+        return redirect()->back()->with('success', 'Feedback berhasil dikirim!');
     }
 }

@@ -14,8 +14,7 @@
                     class="bg-green-600 text-white px-3 py-1 rounded detail-btn"
                     data-detail="{{ $resep['detail'] ?? '-' }}"
                     data-status="{{ $resep['status'] ?? '-' }}"
-                >
-                    Lihat Detail
+                >Lihat Detail
                 </button>
             </div>
         </div>
@@ -28,11 +27,28 @@
             <h2 class="text-lg font-bold mb-2">Detail Resep Makan</h2>
             <p id="modalDetail" class="mb-2 text-gray-700"></p>
             <p id="modalStatus" class="text-sm italic text-gray-500"></p>
-            <div class="mt-4 text-right">
-                <button id="closeDetailModal" class="px-4 py-1 bg-gray-500 text-white rounded">Tutup</button>
-            </div>
+            <form id="feedbackForm" class="mt-4 space-y-2">
+            <label for="feedback" class="block text-sm font-medium text-gray-700">Feedback:</label>
+            <textarea id="feedback" name="feedback" rows="3" class="w-full border rounded p-2" placeholder="Tulis feedback Anda..."></textarea>
+            <button type="submit" class="px-4 py-1 bg-blue-600 text-white rounded">Kirim Feedback</button>
+            <div id="feedbackMsg" class="text-green-600 text-sm mt-1 hidden">Feedback terkirim!</div>
+        </form>
+        <div class="mt-4 text-right">
+            <button id="closeDetailModal" class="px-4 py-1 bg-gray-500 text-white rounded">Tutup</button>
         </div>
+        <script>
+            document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulasi kirim feedback, bisa diganti AJAX ke backend
+            document.getElementById('feedbackMsg').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('feedbackMsg').classList.add('hidden');
+                document.getElementById('feedback').value = '';
+            }, 2000);
+            });
+        </script>
     </div>
+</div>
 
     <script>
         const modal = document.getElementById('detailModal');
