@@ -17,7 +17,9 @@ return new class extends Migration
         $table->date('tanggal');
         $table->string('jenis_latihan');
         $table->text('details');
+        $table->float('kalori');
         $table->string('status')->default('belum');
+        $table->text('feedback');
     });
 }
 

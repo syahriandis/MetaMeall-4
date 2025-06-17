@@ -24,7 +24,7 @@
                     data-jenismakanan="{{ $item['jenismakanan'] }}"
                     data-details="{{ $item['details'] }}"
                     data-kalori="{{ $item['kalori'] }}"
-                    data-status="{{ $item['status'] }}">
+                    data-feedback="{{ $item['feedback'] ?? '' }}">
                     Ubah
                 </button>
                 <button class="bg-red-500 text-white px-4 py-2 rounded delete-btn" data-id="{{ $item['id'] }}">
@@ -43,7 +43,15 @@
                 @csrf
                 @method('PUT')
                 <input type="hidden" id="modalId" name="id" />
-                <div class="mb-4">
+
+                
+                
+                <select name="" id="">
+                @foreach($users as $user)
+                    <option value="">{{$user->name}}</option>
+                    @endforeach
+                </select>
+                    <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">Nama User</label>
                     <input type="text" id="modalNama" name="nama" class="w-full border rounded p-2" required />
                 </div>

@@ -34,21 +34,21 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('resep') }}" 
+                <a href="/resepmakan/{{ session('role') }}" 
                     class="flex items-center rounded-lg p-2 font-semibold text-lg transition-all duration-200 ease-in-out
                         {{ request()->routeIs('resep') ? 'bg-white text-[#5F8C2D] shadow-md' : 'hover:bg-white hover:text-[#5F8C2D]' }}">
                     <i class="fas fa-utensils mr-3"></i> Program Makan
                 </a>
             </li>
             <li>
-                <a href="{{ route('latihan') }}" 
+                <a href="/programlatihan/{{ session('role') }}" 
                     class="flex items-center rounded-lg p-2 font-semibold text-lg transition-all duration-200 ease-in-out
                         {{ request()->routeIs('latihan') ? 'bg-white text-[#5F8C2D] shadow-md' : 'hover:bg-white hover:text-[#5F8C2D]' }}">
                     <i class="fas fa-running mr-3"></i> Program Latihan
                 </a>
             </li>
             <li>
-                <a href="{{ route('progres') }}" 
+                <a href="/progres/{{ session('role') }}" 
                     class="flex items-center rounded-lg p-2 font-semibold text-lg transition-all duration-200 ease-in-out
                         {{ request()->routeIs('progres') ? 'bg-white text-[#5F8C2D] shadow-md' : 'hover:bg-white hover:text-[#5F8C2D]' }}">
                     <i class="fas fa-chart-line mr-3"></i> Laporan Latihan

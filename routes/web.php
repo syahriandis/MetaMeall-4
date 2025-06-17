@@ -31,14 +31,14 @@ Route::delete('/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->nam
 
 
 
-//PROGRES
+// PROGRES
 Route::prefix('/progres')->controller(ProgresController::class)->group(function(){
-    Route::get('/', 'progres')->name('progres');
+    Route::get('/trainee', 'progres')->name('progres');
     Route::get('/trainer', 'progres_trainer')->name('progres-trainer');
-    Route::get('/progres', [ProgresController::class, 'progres']);
-
-
 });
+
+
+
 
 
 // PROGRAM LATIHAN
@@ -59,7 +59,7 @@ Route::prefix('/programlatihan')->controller(ProgramLatihanController::class)->g
 
 //RESEP MAKAN
 Route::prefix('/resepmakan')->controller(ResepMakanController::class)->group(function(){
-    Route::get('/', 'index')->name('resep');
+    // Route::get('/', 'index')->name('resep');
     Route::get('/trainee', 'indexTrainee')->name('resep-trainee');
 // Hapus POST trainee karena trainee tidak bisa tambah data
 

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ResepMakan;
 
@@ -19,7 +19,8 @@ class ResepMakanController extends Controller
     public function indexTrainer()
     {
         $data = ResepMakan::orderBy('tanggal', 'asc')->get();
-        return view('pages.trainer.resepmakan', compact('data'));
+        $users = User::where('role', 'trainee')->get();
+        return view('pages.trainer.resepmakan', compact('data', 'users'));
     }
 
     // Untuk trainee
@@ -37,7 +38,7 @@ public function indexTrainee()
             'jenismakanan' => 'required',
             'details' => 'required',
             'kalori' => 'required|integer',
-            'status' => 'nullable'
+            'feedback' => 'nullable',
         ]);
 
         $validated['status'] = $validated['status'] ?? 'not yet';

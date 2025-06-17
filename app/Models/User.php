@@ -52,12 +52,12 @@ class User extends Authenticatable
         ];
     }
 
-        public function profile()
+    public function profile()
     {
         return $this->hasOne(Profile::class);
     }
 
-        public function feedbacksGiven()
+    public function feedbacksGiven()
     {
         return $this->hasMany(Feedback::class, 'trainee_id');
     }
@@ -66,5 +66,10 @@ class User extends Authenticatable
     public function feedbacksReceived()
     {
         return $this->hasMany(Feedback::class, 'trainer_id');
+    }
+
+    public function data()
+    {
+        return $this->hasOne(Trainee::class, 'trainee_id', 'id');
     }
 }
