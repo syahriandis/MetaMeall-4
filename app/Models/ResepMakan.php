@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class ResepMakan extends Model
 {
     protected $fillable = [
-        'nama',
-        'tanggal',
-        'jenismakanan',
-        'details',
-        'kalori',
-        'feedback',
-    ];
+    'nama',
+    'tanggal',
+    'jenis_makanan', // sudah snake_case
+    'details',
+    'kalori',
+    'feedback',
+];
+
 }

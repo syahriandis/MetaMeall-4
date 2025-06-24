@@ -1,5 +1,4 @@
 <x-app>
-
     <!-- Tombol Tambah -->
     <div class="flex justify-end mb-4">
         <button id="openAddModal" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition transform hover:scale-105 duration-200">
@@ -15,7 +14,6 @@
 
         @foreach($data as $item)
         <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center shadow transition hover:shadow-lg duration-300">
-
             <div>
                 <h2 class="text-xl font-bold">{{ $item['nama'] ?? '-' }}</h2>
                 <p class="text-sm font-semibold">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
@@ -44,13 +42,25 @@
     </section>
 
     <!-- Modal Tambah/Edit -->
-    <div id="editModal"
-        class="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center hidden z-50">
+    <div id="editModal" class="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center hidden z-50">
         <div class="bg-white text-black rounded-lg shadow-lg p-6 w-96">
             <h2 class="text-xl font-bold mb-4" id="modalTitle">Tambah Program Latihan</h2>
             <form id="editForm">
                 <input type="hidden" id="recordId" name="id" />
                 <input type="hidden" id="modalMode" value="add" />
+
+                <!-- TRAINEE DROPDOWN -->
+                @if(isset($trainees))
+                <div class="mb-4" id="traineeDropdownWrapper">
+                    <label class="block text-sm font-semibold mb-1">Pilih Trainee</label>
+                    <select id="traineeSelect" name="trainee_id" class="w-full border rounded p-2 bg-white text-black">
+                        <option value="">-- Pilih Trainee --</option>
+                        @foreach($trainees as $trainee)
+                            <option value="{{ $trainee->id }}">{{ $trainee->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
 
                 <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">Nama</label>
@@ -69,8 +79,7 @@
 
                 <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">Details</label>
-                    <textarea id="details" name="details" rows="3"
-                        class="w-full border rounded p-2 bg-white text-black resize-none" required></textarea>
+                    <textarea id="details" name="details" rows="3" class="w-full border rounded p-2 bg-white text-black resize-none" required></textarea>
                 </div>
 
                 <div class="mb-4">
@@ -80,13 +89,11 @@
 
                 <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">Feedback dari Trainee</label>
-                    <textarea id="edit-feedback" name="feedback" rows="2"
-                        class="w-full border rounded p-2 bg-white text-black resize-none"></textarea>
+                    <textarea id="edit-feedback" name="feedback" rows="2" class="w-full border rounded p-2 bg-white text-black resize-none"></textarea>
                 </div>
 
                 <div class="flex justify-end space-x-2">
-                    <button type="button" id="closeModal"
-                        class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
+                    <button type="button" id="closeModal" class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
                     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Simpan</button>
                 </div>
             </form>
@@ -106,6 +113,8 @@
         const modalDetails = document.getElementById("details");
         const modalKalori = document.getElementById("modalKalori");
         const modalFeedback = document.getElementById("edit-feedback");
+        const traineeSelect = document.getElementById("traineeSelect");
+        const traineeWrapper = document.getElementById("traineeDropdownWrapper");
 
         document.querySelectorAll(".open-modal-btn").forEach(button => {
             button.addEventListener("click", () => {
@@ -118,6 +127,7 @@
                 modalDetails.value = button.getAttribute("data-detail");
                 modalKalori.value = button.getAttribute("data-kalori");
                 modalFeedback.value = button.getAttribute("data-feedback");
+                if (traineeWrapper) traineeWrapper.classList.add("hidden");
                 modal.classList.remove("hidden");
             });
         });
@@ -132,6 +142,8 @@
             modalDetails.value = "";
             modalKalori.value = "";
             modalFeedback.value = "";
+            if (traineeSelect) traineeSelect.value = "";
+            if (traineeWrapper) traineeWrapper.classList.remove("hidden");
             modal.classList.remove("hidden");
         });
 
@@ -147,6 +159,7 @@
             const url = mode === "add"
                 ? "{{ route('program.store') }}"
                 : `/programlatihan/update/${id}`;
+
             const token = '{{ csrf_token() }}';
 
             const data = {
@@ -158,6 +171,10 @@
                 feedback: modalFeedback.value,
                 _token: token
             };
+
+            if (mode === "add") {
+                data.trainee_id = traineeSelect.value;
+            }
 
             fetch(url, {
                 method: "POST",

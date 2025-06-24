@@ -42,14 +42,22 @@ Route::prefix('/progres')->controller(ProgresController::class)->group(function(
 
 
 // PROGRAM LATIHAN
-Route::prefix('/programlatihan')->controller(ProgramLatihanController::class)->group(function () {
+
+Route::middleware(['auth'])->prefix('/programlatihan')->controller(ProgramLatihanController::class)->group(function () {
+
+    // 📌 Tampilan untuk trainee (hanya lihat miliknya)
     Route::get('/trainee', 'programlatihan')->name('latihan');
+
+    // 📌 Tampilan untuk trainer (lihat semua + form tambah)
     Route::get('/trainer', 'programlatihan_trainer')->name('latihan-trainer');
 
-    // CRUD
-    Route::post('/', 'store')->name('program.store');
+    // 📌 Default redirect
+    Route::get('/', function () {
+        return redirect()->route('latihan');
+    })->name('program.index');
 
-        // CRUD
+    // 📌 CRUD
+    Route::post('/store', 'store')->name('program.store');
     Route::post('/update/{id}', 'update')->name('program.update');
     Route::get('/delete/{id}', 'destroy')->name('program.delete');
 });
@@ -57,22 +65,23 @@ Route::prefix('/programlatihan')->controller(ProgramLatihanController::class)->g
 
 
 
+
 //RESEP MAKAN
-Route::prefix('/resepmakan')->controller(ResepMakanController::class)->group(function(){
-    // Route::get('/', 'index')->name('resep');
-    Route::get('/trainee', 'indexTrainee')->name('resep-trainee');
-// Hapus POST trainee karena trainee tidak bisa tambah data
+Route::middleware(['auth'])->prefix('/resepmakan')->controller(ResepMakanController::class)->group(function () {
 
-   
+    // Role-based access
+    Route::get('/trainee', 'index')->name('resep.trainee');
+    Route::get('/trainer', 'indexTrainer')->name('resep.trainer');
 
-    // TRAINER
-    Route::get('/', 'index')->name('resep');
-    Route::get('/trainer', 'indexTrainer')->name('resep-trainer');
-    Route::post('/trainer', 'store')->name('resep-trainer');
+    // Redirect default
+    Route::get('/', function () {
+        return redirect()->route('resep.trainee');
+    })->name('resep.index');
 
     // CRUD
-    Route::put('{id}', 'update');
-    Route::delete('/{id}', 'destroy')->name('resep.destroy');
+    Route::post('/store', 'store')->name('resep.store');
+    Route::post('/update/{id}', 'update')->name('resep.update');
+    Route::get('/delete/{id}', 'destroy')->name('resep.delete');
 });
 
 

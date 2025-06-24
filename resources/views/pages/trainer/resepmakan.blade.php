@@ -1,30 +1,35 @@
 <x-app>
     <!-- Tombol Tambah -->
     <div class="flex justify-end mb-4">
-        <button onclick="toggle_create()" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition transform hover:scale-105 duration-200">
+        <button id="openAddModal" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition transform hover:scale-105 duration-200">
             + Tambah Resep Makan
         </button>
     </div>
 
     <!-- Daftar Resep -->
-    <div id="listData">
+    <section class="space-y-4">
+        @if(count($data) === 0)
+            <p class="text-center text-gray-500">Belum ada resep makan.</p>
+        @endif
+
         @foreach($data as $item)
-        <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center transition hover:shadow-lg duration-300 mb-4" data-id="{{ $item['id'] }}">
+        <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center">
             <div>
-                <h2 class="text-xl font-bold">{{ $item['nama'] ?? '-' }}</h2>
-                <p class="text-sm font-semibold">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
-                <p>{{ $item['jenismakanan'] ?? '-' }}</p>
-                <p class="text-sm text-gray-600">{{ $item['kalori'] ?? '-' }} Kalori</p>
+                <h2 class="text-xl font-bold">{{ $item['nama_makanan'] ?? '-' }}</h2>
+                <p class="text-sm">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
+                <p>{{ $item['kategori'] }}</p>
+                <p class="text-sm text-gray-700">Kalori: {{ $item['kalori'] }} kcal</p>
+                <p class="text-sm text-gray-700">Feedback: {{ $item['feedback'] ?? '-' }}</p>
             </div>
             <div class="space-x-2">
                 <button class="bg-green-500 text-white px-4 py-2 rounded open-modal-btn"
                     data-id="{{ $item['id'] }}"
-                    data-nama="{{ $item['nama'] }}"
+                    data-nama="{{ $item['nama_makanan'] }}"
                     data-tanggal="{{ $item['tanggal'] }}"
-                    data-jenismakanan="{{ $item['jenismakanan'] }}"
-                    data-details="{{ $item['details'] }}"
-                    data-kalori="{{ $item['kalori'] }}"
-                    data-feedback="{{ $item['feedback'] ?? '' }}">
+                    data-kategori="{{ $item['kategori'] }}"
+                    data-detail="{{ $item['details'] }}"
+                    data-feedback="{{ $item['feedback'] }}"
+                    data-kalori="{{ $item['kalori'] }}">
                     Ubah
                 </button>
                 <button class="bg-red-500 text-white px-4 py-2 rounded delete-btn" data-id="{{ $item['id'] }}">
@@ -33,51 +38,56 @@
             </div>
         </div>
         @endforeach
-    </div>
+    </section>
 
-    <!-- Modal Tambah/Ubah -->
-    <div id="editModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-            <h2 id="modalTitle" class="text-xl font-bold mb-4">Tambah Resep Makan</h2>
+    <!-- Modal Tambah/Edit -->
+    <div id="editModal" class="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center hidden z-50">
+        <div class="bg-white text-black rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-xl font-bold mb-4" id="modalTitle">Tambah Resep Makan</h2>
             <form id="editForm">
-                @csrf
-                @method('PUT')
-                <input type="hidden" id="modalId" name="id" />
+                <input type="hidden" id="recordId" name="id" />
+                <input type="hidden" id="modalMode" value="add" />
 
-                
-                
-                <select name="" id="">
-                @foreach($users as $user)
-                    <option value="">{{$user->name}}</option>
-                    @endforeach
-                </select>
-                    <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Nama User</label>
-                    <input type="text" id="modalNama" name="nama" class="w-full border rounded p-2" required />
+                <div class="mb-4" id="traineeDropdownWrapper">
+                    <label class="block text-sm font-semibold mb-1">Pilih Trainee</label>
+                    <select id="traineeSelect" name="trainee_id" class="w-full border rounded p-2 bg-white text-black">
+                        <option value="">-- Pilih Trainee --</option>
+                        @foreach($trainees as $trainee)
+                            <option value="{{ $trainee->id }}">{{ $trainee->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold mb-1">Nama Makanan</label>
+                    <input type="text" id="modalNama" name="nama_makanan" class="w-full border rounded p-2" required />
+                </div>
+
                 <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">Tanggal</label>
                     <input type="date" id="modalTanggal" name="tanggal" class="w-full border rounded p-2" required />
                 </div>
+
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Jenis Makanan</label>
-                    <input type="text" id="modalResep" name="jenismakanan" class="w-full border rounded p-2" required />
+                    <label class="block text-sm font-semibold mb-1">Kategori</label>
+                    <input type="text" id="modalKategori" name="kategori" class="w-full border rounded p-2" required />
                 </div>
+
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Details</label>
-                    <textarea class="w-full border rounded p-2 resize-none" id="modalDetails" name="details" rows="3" required></textarea>
+                    <label class="block text-sm font-semibold mb-1">Detail</label>
+                    <textarea id="modalDetail" name="details" class="w-full border rounded p-2" rows="3" required></textarea>
                 </div>
+
                 <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">Kalori</label>
                     <input type="number" id="modalKalori" name="kalori" class="w-full border rounded p-2" required />
                 </div>
+
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Status</label>
-                    <select class="w-full border rounded p-2" id="modalStatus" name="status" required>
-                        <option value="not yet">Not Yet</option>
-                        <option value="finish">Finish</option>
-                    </select>
+                    <label class="block text-sm font-semibold mb-1">Feedback</label>
+                    <textarea id="modalFeedback" name="feedback" class="w-full border rounded p-2" rows="2"></textarea>
                 </div>
+
                 <div class="flex justify-end space-x-2">
                     <button type="button" id="closeModal" class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
                     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Simpan</button>
@@ -86,155 +96,113 @@
         </div>
     </div>
 
-    <div id="create-modal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-            <h2 id="create-title" class="text-xl font-bold mb-4">Tambah Resep Makanasdasd</h2>
-            <form action="/resepmakan/trainer" method="POST">
-                @csrf
-                <input type="hidden" name="id" />
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Nama User</label>
-                    <input type="text" name="nama" class="w-full border rounded p-2" required />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Tanggal</label>
-                    <input type="date" name="tanggal" class="w-full border rounded p-2" required />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Jenis Makanan</label>
-                    <input type="text" name="jenismakanan" class="w-full border rounded p-2" required />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Details</label>
-                    <textarea class="w-full border rounded p-2 resize-none" name="details" rows="3" required></textarea>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Kalori</label>
-                    <input type="number" name="kalori" class="w-full border rounded p-2" required />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1">Status</label>
-                    <select class="w-full border rounded p-2" name="status" required>
-                        <option value="not yet">Not Yet</option>
-                        <option value="finish">Finish</option>
-                    </select>
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="toggle_create()" class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Script -->
     <script>
-       window.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById("editModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalId = document.getElementById("modalId");
-    const modalNama = document.getElementById("modalNama");
-    const modalTanggal = document.getElementById("modalTanggal");
-    const modalResep = document.getElementById("modalResep");
-    const modalDetails = document.getElementById("modalDetails");
-    const modalKalori = document.getElementById("modalKalori");
-    const modalStatus = document.getElementById("modalStatus");
+        const modal = document.getElementById("editModal");
+        const modalMode = document.getElementById("modalMode");
+        const modalTitle = document.getElementById("modalTitle");
+        const recordId = document.getElementById("recordId");
+        const traineeSelect = document.getElementById("traineeSelect");
+        const traineeWrapper = document.getElementById("traineeDropdownWrapper");
 
-    const closeModalBtn = document.getElementById("closeModal");
-    const editForm = document.getElementById("editForm");
+        const modalNama = document.getElementById("modalNama");
+        const modalTanggal = document.getElementById("modalTanggal");
+        const modalKategori = document.getElementById("modalKategori");
+        const modalDetail = document.getElementById("modalDetail");
+        const modalKalori = document.getElementById("modalKalori");
+        const modalFeedback = document.getElementById("modalFeedback");
 
-    document.querySelectorAll(".open-modal-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            modalTitle.textContent = "Ubah Resep Makan";
-            modalId.value = button.dataset.id;
-            modalNama.value = button.dataset.nama;
-            modalTanggal.value = button.dataset.tanggal;
-            modalResep.value = button.dataset.jenismakanan;
-            modalDetails.value = button.dataset.details;
-            modalKalori.value = button.dataset.kalori;
-            modalStatus.value = button.dataset.status;
+        document.getElementById("openAddModal").addEventListener("click", () => {
+            modalMode.value = "add";
+            modalTitle.textContent = "Tambah Resep Makan";
+            recordId.value = "";
+            modalNama.value = "";
+            modalTanggal.value = "";
+            modalKategori.value = "";
+            modalDetail.value = "";
+            modalKalori.value = "";
+            modalFeedback.value = "";
+            traineeSelect.value = "";
+            traineeWrapper.classList.remove("hidden");
             modal.classList.remove("hidden");
         });
-    });
 
-    closeModalBtn.addEventListener("click", () => {
-        modal.classList.add("hidden");
-    });
+        document.querySelectorAll(".open-modal-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                modalMode.value = "edit";
+                modalTitle.textContent = "Ubah Resep Makan";
+                recordId.value = button.dataset.id;
+                modalNama.value = button.dataset.nama;
+                modalTanggal.value = button.dataset.tanggal;
+                modalKategori.value = button.dataset.kategori;
+                modalDetail.value = button.dataset.detail;
+                modalKalori.value = button.dataset.kalori;
+                modalFeedback.value = button.dataset.feedback;
+                traineeWrapper.classList.add("hidden");
+                modal.classList.remove("hidden");
+            });
+        });
 
-    editForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+        document.getElementById("closeModal").addEventListener("click", () => {
+            modal.classList.add("hidden");
+        });
 
-        const id = modalId.value;
-        const url = id ? `/resepmakan/${id}` : `/resepmakan/trainer`;
-        const method = id ? "PUT" : "POST";
+        document.getElementById("editForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
-        const formData = {
-            nama: modalNama.value,
-            tanggal: modalTanggal.value,
-            jenismakanan: modalResep.value,
-            details: modalDetails.value,
-            kalori: modalKalori.value,
-            status: modalStatus.value,
-            _token: "{{ csrf_token() }}"
-        };
+            const mode = modalMode.value;
+            const id = recordId.value;
+            const url = mode === "add"
+                ? "{{ route('resep.store') }}"
+                : `/resepmakan/update/${id}`;
 
-        try {
-            const response = await fetch(url, {
-                method: method,
+            const token = '{{ csrf_token() }}';
+            const data = {
+    nama_makanan: modalNama.value,
+    tanggal: modalTanggal.value,
+    kategori: modalKategori.value,
+    details: modalDetail.value, // ✅ ini WAJIB ADA
+    kalori: modalKalori.value,
+    feedback: modalFeedback.value,
+    _token: token
+};
+
+
+            if (mode === "add") {
+                data.trainee_id = traineeSelect.value;
+            }
+
+            fetch(url, {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "X-CSRF-TOKEN": formData._token
+                    "Accept": "application/json"
                 },
-                body: JSON.stringify(formData)
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert(result.message);
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(result => {
+                alert(result.message || "Berhasil!");
                 location.reload();
-            } else {
-                alert("Gagal: " + (result.message || "Terjadi kesalahan"));
-            }
-        } catch (error) {
-            alert("Error: " + error.message);
-        }
-    });
-
-    document.querySelectorAll(".delete-btn").forEach(button => {
-        button.addEventListener("click", async () => {
-            if (!confirm("Yakin ingin menghapus data ini?")) return;
-            const id = button.dataset.id;
-
-            try {
-                const response = await fetch(`/resepmakan/${id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                        "Accept": "application/json"
-                    }
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert("Gagal hapus: " + result.message);
-                }
-            } catch (error) {
-                alert("Error hapus: " + error.message);
-            }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Terjadi kesalahan");
+            });
         });
-    });
 
-    window.toggle_create = function () {
-        const createModal = document.getElementById("create-modal");
-        createModal.classList.toggle("hidden");
-    };
-});
-
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const id = button.getAttribute("data-id");
+                if (confirm("Yakin ingin menghapus resep ini?")) {
+                    fetch(`/resepmakan/delete/${id}`, { method: "GET" })
+                        .then(res => res.json())
+                        .then(result => {
+                            alert(result.message || "Berhasil dihapus");
+                            location.reload();
+                        });
+                }
+            });
+        });
     </script>
 </x-app>
