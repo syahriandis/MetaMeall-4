@@ -15,7 +15,7 @@
         @foreach($data as $item)
         <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center">
             <div>
-                <h2 class="text-xl font-bold">{{ $item['nama_makanan'] ?? '-' }}</h2>
+                <h2 class="text-xl font-bold">{{ $item['nama'] ?? '-' }}</h2>
                 <p class="text-sm">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
                 <p>{{ $item['kategori'] }}</p>
                 <p class="text-sm text-gray-700">Kalori: {{ $item['kalori'] }} kcal</p>

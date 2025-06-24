@@ -3,40 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class ProgresController extends Controller
 {
-   public function progres_trainer()
-{
-    $latihan = DB::table('program_latihan')
-                ->select('tanggal', 'kalori')
-                ->orderBy('tanggal')
-                ->get();
+    // Untuk trainer: bisa pilih trainee dari dropdown
+    public function progres_trainer(Request $request)
+    {
+        $traineeId = $request->get('trainee_id');
+        $trainees = User::where('role', 'trainee')->get();
 
-    $makan = DB::table('resep_makans')
-                ->select('tanggal', 'kalori')
-                ->orderBy('tanggal')
-                ->get();
+        $latihan = DB::table('program_latihan')
+                    ->select('tanggal', 'kalori')
+                    ->when($traineeId, fn($query) => $query->where('trainee_id', $traineeId))
+                    ->orderBy('tanggal')
+                    ->get();
 
-    return view('pages.trainer.progres', compact('latihan', 'makan'));
-}
+        $makan = DB::table('resep_makans')
+                    ->select('tanggal', 'kalori')
+                    ->when($traineeId, fn($query) => $query->where('trainee_id', $traineeId))
+                    ->orderBy('tanggal')
+                    ->get();
 
-public function progres()
-{
-    $latihan = DB::table('program_latihan')
-                ->select('tanggal', 'kalori')
-                ->orderBy('tanggal')
-                ->get();
+        return view('pages.trainer.progres', compact('latihan', 'makan', 'trainees', 'traineeId'));
+    }
 
-    $makan = DB::table('resep_makans')
-                ->select('tanggal', 'kalori')
-                ->orderBy('tanggal')
-                ->get();
+    // Untuk trainee: hanya lihat datanya sendiri
+    public function progres()
+    {
+        $user = Auth::user();
 
-    return view('pages.progres', compact('latihan', 'makan'));
-}
+        $latihan = DB::table('program_latihan')
+                    ->select('tanggal', 'kalori')
+                    ->where('trainee_id', $user->id)
+                    ->orderBy('tanggal')
+                    ->get();
 
+        $makan = DB::table('resep_makans')
+                    ->select('tanggal', 'kalori')
+                    ->where('trainee_id', $user->id)
+                    ->orderBy('tanggal')
+                    ->get();
 
-    
+        return view('pages.progres', compact('latihan', 'makan'));
+    }
 }

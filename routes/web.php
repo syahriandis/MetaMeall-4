@@ -41,6 +41,7 @@ Route::prefix('/progres')->controller(ProgresController::class)->group(function(
 
 
 
+
 // PROGRAM LATIHAN
 
 Route::middleware(['auth'])->prefix('/programlatihan')->controller(ProgramLatihanController::class)->group(function () {
@@ -115,6 +116,5 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // FEEDBACK
 Route::middleware(['auth'])->group(function () {
     Route::post('/programlatihan/feedback/{id}', [ProgramLatihanController::class, 'submitFeedback'])->name('programlatihan.feedback');
-
-    Route::get('/feedback/create', [FeedbackController::class, 'create'])->name('feedback.create');
+    Route::post('/resepmakan/feedback/{id}', [ResepMakanController::class, 'submitFeedback'])->name('resepmakan.feedback');
 });

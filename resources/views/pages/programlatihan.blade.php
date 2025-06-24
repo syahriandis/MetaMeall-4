@@ -10,12 +10,11 @@
             <div class="mt-2">
                 <button 
                     class="bg-blue-500 text-white px-3 py-1 rounded detail-btn"
-                     data-detail="{{ $item['details'] ?? '-' }}"
+                    data-detail="{{ $item['details'] ?? '-' }}"
                     data-status="{{ $item['feedback'] ?? '-' }}"
                     data-id="{{ $item['id'] }}"
 
-                >
-                    Lihat Detail
+                > Lihat Detail
                 </button>
             </div>
         </div>
@@ -23,7 +22,7 @@
     </section>
 
     <!-- Modal Detail -->
-<div id="detailModal" class="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/40 hidden">
+    <div id="detailModal" class="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/40 hidden">
     <div class="bg-white p-6 rounded-lg w-96 shadow">
         <h2 class="text-lg font-bold mb-2">Detail Program Latihan</h2>
         <p id="modalDetail" class="mb-2 text-gray-700"></p>
@@ -48,11 +47,11 @@
 
 
     <script>
-        const modal = document.getElementById('detailModal');
-    const detailText = document.getElementById('modalDetail');
-    const statusText = document.getElementById('modalStatus');
-    const feedbackIdInput = document.getElementById('feedbackId');
-    const closeBtn = document.getElementById('closeDetailModal');
+            const modal = document.getElementById('detailModal');
+            const detailText = document.getElementById('modalDetail');
+            const statusText = document.getElementById('modalStatus');
+            const feedbackIdInput = document.getElementById('feedbackId');
+            const closeBtn = document.getElementById('closeDetailModal');
 
             document.querySelectorAll('.detail-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -62,11 +61,11 @@
             modal.classList.remove('hidden');
 
             document.getElementById('feedbackForm').action = `/programlatihan/feedback/${btn.getAttribute('data-id')}`;
-            });
         });
+    });
 
-        closeBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-    </script>
+    closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+</script>
 </x-app>

@@ -47,7 +47,7 @@ class ResepMakanController extends Controller
             'kategori' => 'required',
             'details' => 'required',
             'kalori' => 'required|numeric',
-            'feedback' => 'nullable|string'
+            'feedback' => 'nullable'
         ]);
 
         $validated['feedback'] = $validated['feedback'] ?? 'belum';
@@ -76,7 +76,7 @@ class ResepMakanController extends Controller
     'jenis_makanan' => 'required',
     'details' => 'required', // ✅ INI WAJIB ADA
     'kalori' => 'required|numeric',
-    'feedback' => 'nullable|string'
+    'feedback' => 'nullable'
 ]);
 
 

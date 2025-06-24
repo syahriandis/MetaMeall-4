@@ -26,7 +26,7 @@
       <!-- Pop-up Profile -->
       <div id="profilePopup" class="hidden absolute right-0 top-16 w-80 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-6">
         <div class="text-center">
-          <img src="{{ asset(Auth::user()->profile_photo_path ?? 'images/profil.jpeg') }}" class="w-24 h-24 rounded-full mx-auto mb-3 border" alt="Foto Profil">
+          <img src="https://png.pngtree.com/png-clipart/20220621/original/pngtree-fruits-icon-design-vector-png-image_8168758.png" class="w-24 h-24 rounded-full mx-auto mb-3 border" alt="Foto Profil">
 
           <h2 class="text-lg font-bold text-gray-800">{{ Auth::user()->name }}</h2>
           <p class="text-gray-600 mb-2">{{ Auth::user()->email }}</p>

@@ -9,10 +9,12 @@ class ResepMakan extends Model
     protected $fillable = [
     'nama',
     'tanggal',
-    'jenis_makanan', // sudah snake_case
+    'jenismakanan',
     'details',
     'kalori',
     'feedback',
+    'trainee_id'
 ];
+
 
 }
