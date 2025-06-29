@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\ProfileController;
 
 
 //LANDING PAGES
@@ -97,15 +98,26 @@ Route::prefix("/")->controller(AuthController::class)->group(function(){
     Route::post('/logout', 'logout')->name('logout');
 });
 
+// BERANDA  
 
-//BERANDA  
-Route::prefix('/beranda')->middleware('auth')->controller(BerandaController::class)->group(function(){
-    Route::get('/', 'beranda')->name('beranda');
-    Route::post('/', 'beranda')->name('beranda');
+// Redirect ke halaman sesuai role (tetap jaga route lama)
+Route::middleware(['auth'])->get('/beranda', function () {
+    $role = Auth::user()->role;
+
+    return match ($role) {
+        'trainer' => redirect()->route('beranda-trainer'),
+        'trainee' => redirect()->route('beranda-trainee'),
+        default => abort(403, 'Role tidak dikenali.'),
+    };
+})->name('beranda');
+
+// Group beranda untuk role khusus
+Route::prefix('/beranda')->middleware('auth')->controller(BerandaController::class)->group(function () {
     Route::get('/trainer', 'beranda_trainer')->name('beranda-trainer');
+    Route::get('/trainee', 'beranda_trainee')->name('beranda-trainee');
 });
 
-// Middleware untuk role
+// Middleware untuk role admin (biarkan tetap)
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
         return view('pages.beranda');
@@ -118,3 +130,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/programlatihan/feedback/{id}', [ProgramLatihanController::class, 'submitFeedback'])->name('programlatihan.feedback');
     Route::post('/resepmakan/feedback/{id}', [ResepMakanController::class, 'submitFeedback'])->name('resepmakan.feedback');
 });
+
+//UBAH PROFILE
+Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');

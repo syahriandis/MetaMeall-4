@@ -32,38 +32,155 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 </script>
-  <script>
-    function toggleProfile() {
-      const popup = document.getElementById('profilePopup');
-      popup.classList.toggle('hidden');
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Profile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const popup = document.getElementById('profilePopup');
+    const editProfileModal = document.getElementById('editProfileModal');
+
+    window.toggleProfile = function () {
+        popup.classList.toggle('hidden');
     }
 
-    function openModal() {
-  const modal = document.getElementById('editProfileModal');
-  modal.classList.remove('hidden');
-  modal.classList.add('flex'); // <-- Ini penting supaya modal tampil di tengah
-  document.getElementById('profilePopup').classList.add('hidden'); // Tutup pop-up profile
-}
+    window.openModal = function () {
+        editProfileModal.classList.remove('hidden');
+        editProfileModal.classList.add('flex');
+        popup.classList.add('hidden');
+    }
 
-
-function closeModal() {
-  const modal = document.getElementById('editProfileModal');
-  modal.classList.remove('flex');
-  modal.classList.add('hidden');
-}
+    window.closeModal = function () {
+        editProfileModal.classList.remove('flex');
+        editProfileModal.classList.add('hidden');
+    }
 
     window.addEventListener('click', function(e) {
-      const popup = document.getElementById('profilePopup');
-      const modal = document.getElementById('editProfileModal');
-      const isInsidePopup = popup.contains(e.target);
-      const isButton = e.target.closest('button');
-      const isInsideModal = modal.contains(e.target);
-
-      if (!isInsidePopup && !isButton && popup && !modal.classList.contains('flex')) {
-        popup.classList.add('hidden');
-      }
+        const isInsidePopup = popup?.contains(e.target);
+        const isButton = e.target.closest('button');
+        const isInsideModal = editProfileModal?.contains(e.target);
+        if (!isInsidePopup && !isButton && popup && !editProfileModal?.classList.contains('flex')) {
+            popup.classList.add('hidden');
+        }
     });
-  </script>
+
+    // ==== MODAL LATIHAN ====
+    const modal = document.getElementById("editModal");
+    const closeModal = document.getElementById("closeModal");
+    const modalMode = document.getElementById("modalMode");
+    const modalTitle = document.getElementById("modalTitle");
+    const recordId = document.getElementById("recordId");
+    const modalNama = document.getElementById("modalNama");
+    const modalTanggal = document.getElementById("modalTanggal");
+    const modalLatihan = document.getElementById("modalLatihan");
+    const modalDetails = document.getElementById("details");
+    const modalKalori = document.getElementById("modalKalori");
+    const modalFeedback = document.getElementById("edit-feedback");
+    const traineeSelect = document.getElementById("traineeSelect");
+    const traineeWrapper = document.getElementById("traineeDropdownWrapper");
+
+    document.querySelectorAll(".open-modal-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            modalMode.value = "edit";
+            modalTitle.textContent = "Ubah Program Latihan";
+            recordId.value = button.getAttribute("data-id");
+            modalNama.value = button.getAttribute("data-nama");
+            modalTanggal.value = button.getAttribute("data-tanggal");
+            modalLatihan.value = button.getAttribute("data-latihan");
+            modalDetails.value = button.getAttribute("data-detail");
+            modalKalori.value = button.getAttribute("data-kalori");
+            modalFeedback.value = button.getAttribute("data-feedback");
+            if (traineeWrapper) traineeWrapper.classList.add("hidden");
+            modal.classList.remove("hidden");
+        });
+    });
+
+    const addBtn = document.getElementById("openAddModal");
+    if (addBtn) {
+        addBtn.addEventListener("click", () => {
+            modalMode.value = "add";
+            modalTitle.textContent = "Tambah Program Latihan";
+            recordId.value = "";
+            modalNama.value = "";
+            modalTanggal.value = "";
+            modalLatihan.value = "";
+            modalDetails.value = "";
+            modalKalori.value = "";
+            modalFeedback.value = "";
+            if (traineeSelect) traineeSelect.value = "";
+            if (traineeWrapper) traineeWrapper.classList.remove("hidden");
+            modal.classList.remove("hidden");
+        });
+    }
+
+    closeModal?.addEventListener("click", () => {
+        modal.classList.add("hidden");
+    });
+
+    const form = document.getElementById("editForm");
+    form?.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const mode = modalMode.value;
+        const id = recordId.value;
+        const url = mode === "add"
+            ? "{{ route('program.store') }}"
+            : `/programlatihan/update/${id}`;
+
+        const token = '{{ csrf_token() }}';
+
+        const data = {
+            nama: modalNama.value,
+            tanggal: modalTanggal.value,
+            jenis_latihan: modalLatihan.value,
+            details: modalDetails.value,
+            kalori: modalKalori.value,
+            feedback: modalFeedback.value,
+            _token: token
+        };
+
+        if (mode === "add") {
+            data.trainee_id = traineeSelect?.value;
+        }
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(result => {
+            alert(result.message || "Berhasil!");
+            location.reload();
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Terjadi kesalahan saat mengirim data");
+        });
+    });
+
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const id = button.getAttribute("data-id");
+            if (confirm("Yakin ingin menghapus data ini?")) {
+                fetch(`/programlatihan/delete/${id}`, {
+                    method: "GET"
+                })
+                .then(res => res.json())
+                .then(result => {
+                    alert(result.message || "Berhasil dihapus");
+                    location.reload();
+                });
+            }
+        });
+    });
+
+});
+</script>
+
   
 </body>
 </html>

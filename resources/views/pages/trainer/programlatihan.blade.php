@@ -100,6 +100,7 @@
         </div>
     </div>
 
+    @push('scripts')
     <!-- Script interaksi -->
     <script>
         const modal = document.getElementById("editModal");
@@ -211,4 +212,5 @@
             });
         });
     </script>
+    @endpush
 </x-app>
