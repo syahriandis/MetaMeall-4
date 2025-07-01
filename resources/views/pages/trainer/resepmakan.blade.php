@@ -6,39 +6,41 @@
         </button>
     </div>
 
-    <!-- Daftar Resep -->
-    <section class="space-y-4">
-        @if(count($data) === 0)
-            <p class="text-center text-gray-500">Belum ada resep makan.</p>
-        @endif
+  <!-- Daftar Resep -->
+<section class="space-y-4">
+    @if(count($data) === 0)
+        <p class="text-center text-gray-500">Belum ada resep makan.</p>
+    @endif
 
-        @foreach($data as $item)
-        <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center">
-            <div>
-                <h2 class="text-xl font-bold">{{ $item['nama'] ?? '-' }}</h2>
-                <p class="text-sm">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
-                <p>{{ $item['kategori'] }}</p>
-                <p class="text-sm text-gray-700">Kalori: {{ $item['kalori'] }} kcal</p>
-                <p class="text-sm text-gray-700">Feedback: {{ $item['feedback'] ?? '-' }}</p>
-            </div>
-            <div class="space-x-2">
-                <button class="bg-green-500 text-white px-4 py-2 rounded open-modal-btn"
-                    data-id="{{ $item['id'] }}"
-                    data-nama="{{ $item['nama_makanan'] }}"
-                    data-tanggal="{{ $item['tanggal'] }}"
-                    data-kategori="{{ $item['kategori'] }}"
-                    data-detail="{{ $item['details'] }}"
-                    data-feedback="{{ $item['feedback'] }}"
-                    data-kalori="{{ $item['kalori'] }}">
-                    Ubah
-                </button>
-                <button class="bg-red-500 text-white px-4 py-2 rounded delete-btn" data-id="{{ $item['id'] }}">
-                    Hapus
-                </button>
-            </div>
+    @foreach($data as $item)
+    <div class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center">
+        <div>
+            <h2 class="text-xl font-bold">{{ $item['trainee']['name'] ?? '-' }}</h2>
+            <p class="text-sm">{{ \Carbon\Carbon::parse($item['tanggal'])->translatedFormat('l, d F Y') }}</p>
+            <p class="text-sm text-gray-700 italic">({{ $item['nama_makanan'] ?? '-' }})</p>
+            <p>{{ $item['kategori'] }}</p>
+            <p class="text-sm text-gray-700">Kalori: {{ $item['kalori'] }} kcal</p>
+            <p class="text-sm text-gray-700">Feedback: {{ $item['feedback'] ?? '-' }}</p>
         </div>
-        @endforeach
-    </section>
+        <div class="space-x-2">
+            <button class="bg-green-500 text-white px-4 py-2 rounded open-modal-btn"
+                data-id="{{ $item['id'] }}"
+                data-nama="{{ $item['nama_makanan'] }}"
+                data-tanggal="{{ $item['tanggal'] }}"
+                data-kategori="{{ $item['kategori'] }}"
+                data-detail="{{ $item['details'] }}"
+                data-feedback="{{ $item['feedback'] }}"
+                data-kalori="{{ $item['kalori'] }}">
+                Ubah
+            </button>
+            <button class="bg-red-500 text-white px-4 py-2 rounded delete-btn" data-id="{{ $item['id'] }}">
+                Hapus
+            </button>
+        </div>
+    </div>
+    @endforeach
+</section>
+
 
     <!-- Modal Tambah/Edit -->
     <div id="editModal" class="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center hidden z-50">
