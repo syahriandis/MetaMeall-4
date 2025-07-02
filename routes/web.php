@@ -20,15 +20,21 @@ Route::prefix('landing')->controller(LandingpageController::class)->group(functi
     Route::get('/fitur', 'fitur')->name('fitur');
 });
 
+
+
 // NOTIFIKASI UNTUK TRAINEE
-Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
+Route::get('/notifikasi/trainee', [NotifikasiController::class, 'trainee'])->name('notifikasi.trainee');
 Route::patch('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
 
+// Redirect /notifikasi ke /notifikasi/trainee (opsional)
+Route::redirect('/notifikasi', '/notifikasi/trainee');
+
 // NOTIFIKASI UNTUK TRAINER (tambah + edit + hapus)
-Route::get('/notifikasi/trainer', [NotifikasiController::class, 'indextrainer'])->name('notifikasi.trainer');
+Route::get('/notifikasi/trainer', [NotifikasiController::class, 'trainer'])->name('notifikasi.trainer');
 Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
 Route::put('/notifikasi/{id}', [NotifikasiController::class, 'update'])->name('notifikasi.update');
 Route::delete('/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->name('notifikasi.destroy');
+
 
 
 

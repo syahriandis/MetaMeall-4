@@ -6,11 +6,18 @@
     <input type="text" placeholder="Search..." class="ml-2 w-full border-none focus:outline-none bg-transparent text-black">
   </div>
 
-  <!-- User Icons -->
-  <div class="hidden md:flex items-center space-x-4 relative">
-    <a href="{{ route('notifikasi') }}" class="text-white text-xl hover:text-gray-200">
+<!-- User Icons -->
+<div class="hidden md:flex items-center space-x-4 relative">
+  @if(Auth::user()->role === 'trainer')
+    <a href="{{ route('notifikasi.trainer') }}" class="text-white text-xl hover:text-gray-200">
       <i class="fas fa-bell"></i>
     </a>
+  @else
+    <a href="{{ route('notifikasi.trainee') }}" class="text-white text-xl hover:text-gray-200">
+      <i class="fas fa-bell"></i>
+    </a>
+  @endif
+
 
     @if(Auth::check())
       <!-- Tombol Profil -->

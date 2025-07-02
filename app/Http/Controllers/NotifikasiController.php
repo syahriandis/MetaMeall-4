@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 class NotifikasiController extends Controller
 {
     // Untuk trainee (hanya bisa lihat & hapus)
-    public function index()
+    public function trainee()
     {
         $data = Notifikasi::latest()->get();
         return view('pages.notifikasi', compact('data'));
     }
 
     // Untuk trainer (bisa tambah, edit, hapus)
-    public function indextrainer()
+    public function trainer()
     {
         $data = Notifikasi::latest()->get();
         return view('pages.trainer.notifikasi', compact('data'));
