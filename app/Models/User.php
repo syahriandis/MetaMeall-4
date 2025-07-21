@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Trainee::class, 'trainee_id', 'id');
     }
+
+    public function programs()
+{
+    return $this->hasMany(\App\Models\ProgramLatihan::class, 'trainee_id');
+}
 }

@@ -17,14 +17,38 @@ class ResepMakanController extends Controller
     // Trainer: lihat semua + form tambah (dropdown trainee)
     public function indexTrainer()
     {
-        $data = ResepMakan::orderBy('tanggal', 'asc')->get();
         $trainees = User::where('role', 'trainee')->get();
+        $data = [];
 
-        return view('pages.trainer.resepmakan', compact('data', 'trainees'));
+        foreach ($trainees as $trainee) {
+            $resep = ResepMakan::where('trainee_id', $trainee->id)
+                ->orderBy('tanggal', 'asc')
+                ->get();
+
+            $data[] = [
+                'nama' => $trainee->name,
+                'gender' => $trainee->gender,
+                'umur' => $trainee->age,
+                'berat' => $trainee->weight,
+                'tinggi' => $trainee->height,
+                'foto' => $trainee->foto,
+                'resep' => $resep,
+            ];
+        }
+
+        return view('pages.trainer.resepmakan', [
+            'data' => $data,
+            'trainees' => $trainees
+        ]);
+    }
+
+    public function trainee()
+    {
+        return $this->belongsTo(User::class, 'trainee_id');
     }
 
     // Trainee: hanya lihat miliknya
-    public function index()
+    public function indexTrainee()
     {
         $user = Auth::user();
 
@@ -33,7 +57,9 @@ class ResepMakanController extends Controller
         }
 
         $data = ResepMakan::where('trainee_id', $user->id)->orderBy('tanggal', 'asc')->get();
-
+        if ($data->isEmpty()) {
+            return redirect()->back()->with('info', 'Belum ada resep yang ditambahkan.');
+        }
         return view('pages.resepmakan', compact('data'));
     }
 
@@ -41,25 +67,26 @@ class ResepMakanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'trainee_id' => 'required|exists:users,id',
-            'nama_makanan' => 'required',
-            'tanggal' => 'required|date',
-            'kategori' => 'required',
-            'details' => 'required',
-            'kalori' => 'required|numeric',
-            'feedback' => 'nullable'
-        ]);
+    'trainee_id' => 'required|exists:users,id',
+    'nama' => 'required',
+    'tanggal' => 'required|date',
+    'jenis_makanan' => 'required',
+    'komposisi' => 'required',
+    'kalori' => 'required|numeric',
+    'feedback' => 'nullable|string'
+]);
 
-        $validated['feedback'] = $validated['feedback'] ?? 'belum';
+$data = [
+    'trainee_id' => $validated['trainee_id'],
+    'nama' => $validated['nama'],
+    'tanggal' => $validated['tanggal'],
+    'jenis_makanan' => $validated['jenis_makanan'],
+    'komposisi' => $validated['komposisi'],
+    'kalori' => $validated['kalori'],
+    'feedback' => $validated['feedback'] ?? 'belum'
+];
 
-        // Sesuaikan field untuk model
-        $validated['nama'] = $validated['nama_makanan'];
-        $validated['jenis_makanan'] = $validated['kategori'];
-        $validated['komposisi'] = $validated['details'];
-
-        unset($validated['nama_makanan'], $validated['kategori'], $validated['details']);
-
-        ResepMakan::create($validated);
+        ResepMakan::create($data);
 
         return response()->json(['message' => 'Resep berhasil ditambahkan']);
     }
@@ -69,26 +96,26 @@ class ResepMakanController extends Controller
     {
         $resep = ResepMakan::findOrFail($id);
 
-        $validated = $request->validate([
-    'trainee_id' => 'required|exists:users,id',
+     $validated = $request->validate([
     'nama' => 'required',
     'tanggal' => 'required|date',
     'jenis_makanan' => 'required',
-    'details' => 'required', // ✅ INI WAJIB ADA
+    'komposisi' => 'required',
     'kalori' => 'required|numeric',
-    'feedback' => 'nullable'
+    'feedback' => 'nullable|string'
 ]);
 
+$data = [
+    'nama' => $validated['nama'],
+    'tanggal' => $validated['tanggal'],
+    'jenis_makanan' => $validated['jenis_makanan'],
+    'komposisi' => $validated['komposisi'],
+    'kalori' => $validated['kalori'],
+    'feedback' => $validated['feedback'] ?? 'belum'
+];
 
-        $validated['feedback'] = $validated['feedback'] ?? 'belum';
 
-        $validated['nama'] = $validated['nama_makanan'];
-        $validated['jenis_makanan'] = $validated['kategori'];
-        $validated['komposisi'] = $validated['details'];
-
-        unset($validated['nama_makanan'], $validated['kategori'], $validated['details']);
-
-        $resep->update($validated);
+        $resep->update($data);
 
         return response()->json(['message' => 'Resep berhasil diperbarui']);
     }

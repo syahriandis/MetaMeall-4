@@ -11,6 +11,7 @@ use App\Http\Controllers\BerandaController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 
 
 //LANDING PAGES
@@ -90,6 +91,7 @@ Route::middleware(['auth'])->prefix('/resepmakan')->controller(ResepMakanControl
     Route::post('/store', 'store')->name('resep.store');
     Route::post('/update/{id}', 'update')->name('resep.update');
     Route::get('/delete/{id}', 'destroy')->name('resep.delete');
+
 });
 
 
@@ -139,3 +141,5 @@ Route::middleware(['auth'])->group(function () {
 
 //UBAH PROFILE
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+Route::get('/jadwal/{id}', [ProgramLatihanController::class, 'detailTrainee'])->name('jadwal.trainee');

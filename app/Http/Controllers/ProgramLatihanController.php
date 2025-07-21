@@ -9,37 +9,56 @@ use Illuminate\Support\Facades\Auth;
 
 class ProgramLatihanController extends Controller
 {
-    // Middleware auth agar semua method hanya bisa diakses jika sudah login
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    // Halaman untuk trainer melihat semua program + dropdown trainee
+    // Trainer melihat semua program berdasarkan trainee
     public function programlatihan_trainer()
     {
-        $data = ProgramLatihan::orderBy('tanggal', 'asc')->get();
         $trainees = User::where('role', 'trainee')->get();
+        $data = [];
 
-        return view('pages.trainer.programlatihan', compact('data', 'trainees'));
+        foreach ($trainees as $trainee) {
+            $programs = ProgramLatihan::where('trainee_id', $trainee->id)
+                ->orderBy('tanggal', 'asc')
+                ->get();
+
+            $data[] = [
+                'nama' => $trainee->name,
+                'gender' => $trainee->gender,
+                'umur' => $trainee->age,
+                'berat' => $trainee->weight,
+                'tinggi' => $trainee->height,
+                'foto' => $trainee->foto,
+                'programs' => $programs,
+            ];
+        }
+
+        return view('pages.trainer.programlatihan', [
+            'data' => $data,
+            'trainees' => $trainees,
+        ]);
     }
 
-    // Halaman untuk trainee melihat program latihan miliknya
+    // Trainee melihat program miliknya
     public function programlatihan()
     {
         $user = Auth::user();
 
-        // Tambahan perlindungan jika user null
         if (!$user) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        $data = ProgramLatihan::where('trainee_id', $user->id)->orderBy('tanggal', 'asc')->get();
+        $data = ProgramLatihan::where('trainee_id', $user->id)
+            ->orderBy('tanggal', 'asc')
+            ->get();
 
         return view('pages.programlatihan', compact('data'));
     }
 
-    // Menyimpan data baru (trainer yang tambah program latihan untuk trainee)
+    // Tambah program latihan (oleh trainer)
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -49,17 +68,17 @@ class ProgramLatihanController extends Controller
             'jenis_latihan' => 'required',
             'details' => 'required',
             'feedback' => 'nullable',
-            'kalori' => 'required|numeric'
+            'kalori' => 'required|numeric',
         ]);
 
         $validated['feedback'] = $validated['feedback'] ?? 'belum';
 
         ProgramLatihan::create($validated);
 
-        return response()->json(['message' => 'Data berhasil ditambahkan']);
+        return response()->json(['message' => 'Program latihan berhasil ditambahkan']);
     }
 
-    // Update program latihan yang sudah ada
+    // Update program
     public function update(Request $request, $id)
     {
         $program = ProgramLatihan::findOrFail($id);
@@ -70,30 +89,30 @@ class ProgramLatihanController extends Controller
             'jenis_latihan' => 'required',
             'details' => 'required',
             'feedback' => 'nullable',
-            'kalori' => 'required|numeric'
+            'kalori' => 'required|numeric',
         ]);
 
         $validated['feedback'] = $validated['feedback'] ?? 'belum';
 
         $program->update($validated);
 
-        return response()->json(['message' => 'Data diperbarui']);
+        return response()->json(['message' => 'Program latihan berhasil diperbarui']);
     }
 
-    // Hapus program latihan
+    // Hapus program
     public function destroy($id)
     {
         $program = ProgramLatihan::findOrFail($id);
         $program->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus']);
+        return response()->json(['message' => 'Program latihan berhasil dihapus']);
     }
 
     // Trainee mengirim feedback
     public function submitFeedback(Request $request, $id)
     {
         $request->validate([
-            'feedback' => 'required|string'
+            'feedback' => 'required|string',
         ]);
 
         $program = ProgramLatihan::findOrFail($id);

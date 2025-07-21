@@ -56,11 +56,11 @@
           <input type="email" name="email" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Enter your email" required>
         </div>
         <div class="mb-3">
-          <label class="block text-sm mb-1">Password</label>
+          <label class="block text-sm mb-1">Kata Sandi</label>
           <input type="password" name="password" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Enter your password" required>
         </div>
         <div class="mb-3">
-          <label class="block text-sm mb-1">Name</label>
+          <label class="block text-sm mb-1">Nama</label>
           <input type="text" name="name" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Enter your Name" required>
         </div>
         <div class="mb-3">

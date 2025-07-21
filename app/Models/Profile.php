@@ -19,8 +19,10 @@ class Profile extends Model
         'height',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // App\Models\Profile.php
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }

@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::table('users', function (Blueprint $table) {
-            $table->float('weight')->nullable()->after('gender');
-            $table->float('height')->nullable()->after('weight');
+            
+            
         });
     }
 

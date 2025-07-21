@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::table('resep_makans', function (Blueprint $table) {
             // Tambahkan kolom trainee_id yang boleh null dulu
-            $table->unsignedBigInteger('trainee_id')->nullable()->after('id');
+            
 
             // Foreign key bisa diaktifkan nanti setelah data existing valid
             // $table->foreign('trainee_id')->references('id')->on('users')->onDelete('cascade');
